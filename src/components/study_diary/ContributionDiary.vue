@@ -36,10 +36,7 @@
     <div>
         <h3 class="mb-4">{{ showDay.title }}</h3>
 
-        <div v-if="!showDay.isInit">
-            Hôm nay bạn chưa học gì
-        </div>
-        <div v-else-if="showDay.diary.length == 0">
+        <div v-if="showDay.diary.length == 0">
             Bạn không học gì vào ngày này
             <br><br>
         </div>
@@ -112,7 +109,6 @@ export default {
             data: store.getAll(),
             diaries: [],
             showDay: {
-                isInit: false,
                 title: 'Hôm nay',
                 day: 0,
                 diary: []
@@ -182,6 +178,7 @@ export default {
             let endDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
             let count = 1
 
+            // Put day number to table
             for (let i = 0; i < rows.length; i++) {
                 for (let j = 0; j < rows[i].length; j++) {
                     let day = count - startDay
@@ -203,8 +200,14 @@ export default {
                 }
             }
 
+            // For setShowDay
+            let showDayRow = 0
+            let showDayCol = 0
+            let showDayDay = 0
+
+            // Put diary to table
             diaries.forEach(diary => {
-                let date = new Date(diary.start_at)
+                let date = new Date(diary.stop_at)
                 let day = date.getDate()
                 let weekday = date.getDay()
 
@@ -215,12 +218,14 @@ export default {
                 rows[row][weekday].diary.push(diary)
 
                 if (date.toDateString() == new Date().toDateString()) {
-                    this.showDay.diary = rows[row][weekday].diary
-                    this.showDay.isInit = true
+                    showDayRow = row
+                    showDayCol = weekday
+                    showDayDay = day
                 }
             })
 
             this.diaries = rows
+            this.setShowDay(showDayRow, showDayCol, showDayDay)
         },
 
         parseMarkdown (text) {
