@@ -25,7 +25,10 @@
                 :title="'Ngày ' + col.day"
                 v-if="col.day != ''"
                 @click="setShowDay(i, j, col.day)"
-                :style="{ backgroundColor: dayBackground(col.diary.length) }">
+                :style="{
+                    backgroundColor: dayBackground(col.diary.length),
+                    outline: col.isActive ? '1px solid #000' : 'none'
+                }">
                     {{ col.day }}
                 </p>
             </td>
@@ -186,6 +189,7 @@ export default {
                     if (day > 0 && day <= endDay) {
                         rows[i][j] = {
                             day: day,
+                            isActive: false,
                             diary: []
                         }
                     }
@@ -246,6 +250,15 @@ export default {
             this.showDay.diary = this.diaries[row][col].diary
             this.showDay.day = day
             this.showDay.title = `${day}/${this.month}/${this.year}`
+
+            // Reset active style
+            for (let i = 0; i < this.diaries.length; i++) {
+                for (let j = 0; j < this.diaries[i].length; j++) {
+                    this.diaries[i][j].isActive = false
+                }
+            }
+
+            this.diaries[row][col].isActive = true
         },
 
         dayBackground (length) {
