@@ -251,14 +251,18 @@ export default {
         dayBackground (length) {
             switch (length) {
                 case 0: return '#ffffff'
-                case 1: return '#ff907f30'
-                case 2: return '#ff907f50'
-                case 3: return '#ff907f70'
-                case 4: return '#ff907f90'
-                case 5: return '#ff907fa0'
-                case 6: return '#ff907fc0'
-                case 7: return '#ff907fe0'
-                default: return '#ff907f'
+                case 1: return '#aaffd7'
+                case 2: return '#56ffb0'
+                case 3: return '#00ff87'
+                case 4: return '#29e96c'
+                case 5: return '#06cd4b'
+                case 6: return '#00b23e'
+                case 7: return '#009935'
+                case 8: return '#007f2c'
+                case 9: return '#00661b'
+                case 10: return '#004c14'
+                case 11: return '#00330d'
+                default: return '#002601'
             }
         }
     },
