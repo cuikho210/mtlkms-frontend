@@ -6,47 +6,84 @@
             <p>Năm {{ year }}</p>
         </div>
 
+        <p v-if="this.timeMonth > 0">
+            Bạn đã học
+            <b>
+                {{ (this.timeMonth / 60).toFixed(2) }} giờ
+                ({{ this.timeMonth }} phút)
+            </b>
+            trong tháng này
+        </p>
+        <p v-else>
+            Chưa có dữ liệu thống kê cho tháng này
+        </p>
+
         <input type="month" v-model="date">
     </div>
 
-    <table>
-        <tr>
-            <th>Sun</th>
-            <th>Mon</th>
-            <th>Tue</th>
-            <th>Wed</th>
-            <th>Thu</th>
-            <th>Fri</th>
-            <th>Sat</th>
-        </tr>
-        <tr v-for="(row, i) in diaries" :key="i">
-            <td v-for="(col, j) in row" :key="j">
-                <p
-                :title="'Ngày ' + col.day"
-                v-if="col.day != ''"
-                @click="setShowDay(i, j, col.day)"
-                :style="{
-                    backgroundColor: dayBackground(col.diary.length),
-                    outline: col.isActive ? '1px solid #000' : 'none'
-                }">
-                    {{ col.day }}
-                </p>
-            </td>
-        </tr>
-    </table>
-    <hr>
+    <div style="max-width: 100%; overflow-x: scroll">
+        <table>
+            <tr>
+                <th title="Tổng thời gian học của tuần">Week</th>
+                <th>Sun</th>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+            </tr>
+            <tr v-for="(row, i) in diaries.data" :key="i">
+                <td>
+                    <p v-if="diaries.timeWeek[i] != ''">
+                        {{ diaries.timeWeek[i] }}'
+                        <br>
+                        ({{ (diaries.timeWeek[i] / 60).toFixed(1) }}h)
+                        <br><br><br>
+                    </p>
+                </td>
 
-    <div>
-        <h3 class="mb-4">{{ showDay.title }}</h3>
+                <td v-for="(col, j) in row" :key="j">
+                    <p
+                    :title="'Ngày ' + col.day"
+                    v-if="col.day != ''"
+                    @click="setShowDay(i, j, col.day)"
+                    :style="{
+                        backgroundColor: dayBackground(col.diary.length),
+                        outline: col.isActive ? '1px solid #000' : 'none'
+                    }">
+                        {{ col.day }}
+                    </p>
 
-        <div v-if="showDay.diary.length == 0">
+                    <div
+                    v-if="col.time > 0"
+                    class="text-secondary mt-1">
+                        {{ col.time }}'
+                        <br>
+                        ({{ (col.time / 60).toFixed(1) }}h)
+                        <hr>
+                    </div>
+                    <div v-else>
+                        <br><br><br>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-bottom: 7rem">
+        <h2 class="mb-4">{{ showDay.title }}</h2>
+        <hr>
+
+        <div
+        v-if="showDay.diary.length == 0"
+        style="margin-bottom: 40vh">
             Bạn không học gì vào ngày này
-            <br><br>
         </div>
         <div
         v-else
         v-for="(diary, index) in showDay.diary"
-        :key="index">
+        :key="index" >
             <div class="ml-3">
                 <p v-if="tag == 0">
                     Đã học:
@@ -116,9 +153,10 @@ export default {
                 day: 0,
                 diary: []
             },
-            month: new Date().getMonth() + 1,
-            year: new Date().getFullYear(),
-            date: ''
+            month: this.$route.query.month || new Date().getMonth() + 1,
+            year: this.$route.query.year || new Date().getFullYear(),
+            date: '',
+            timeMonth: 0
         }
     },
 
@@ -147,7 +185,7 @@ export default {
                 throw new Error(data.error)
             }
 
-            if (data.data.length > 0) {
+            if (data.data.diaries.length > 0) {
                 this.putDiary(data.data)
             }
             else {
@@ -156,7 +194,7 @@ export default {
             }
         },
 
-        putDiary (diaries) {
+        putDiary (data) {
             let cols = [
                 [], // Sun
                 [], // Mon
@@ -167,34 +205,45 @@ export default {
                 [] // Sat
             ]
 
-            let rows = [
-                [[],[0],[],[],[],[],[]],
-                [[],[],[],[],[],[],[]],
-                [[],[],[],[],[],[],[]],
-                [[],[],[],[],[],[],[]],
-                [[],[],[],[],[],[],[]],
-                cols
-            ]
+            let rows = {
+                timeWeek: [
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    ''
+                ],
+                data: [
+                    [[],[0],[],[],[],[],[]],
+                    [[],[],[],[],[],[],[]],
+                    [[],[],[],[],[],[],[]],
+                    [[],[],[],[],[],[],[]],
+                    [[],[],[],[],[],[],[]],
+                    cols
+                ]
+            }
 
-            let date = new Date(diaries[0].start_at)
+            let date = new Date(data.diaries[0].stop_at)
             let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
             let endDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
             let count = 1
-
+            
             // Put day number to table
-            for (let i = 0; i < rows.length; i++) {
-                for (let j = 0; j < rows[i].length; j++) {
+            for (let i = 0; i < rows.data.length; i++) {
+                for (let j = 0; j < rows.data[i].length; j++) {
                     let day = count - startDay
 
                     if (day > 0 && day <= endDay) {
-                        rows[i][j] = {
+                        rows.data[i][j] = {
                             day: day,
                             isActive: false,
+                            time: 0,
                             diary: []
                         }
                     }
                     else {
-                        rows[i][j] = {
+                        rows.data[i][j] = {
                             day: '',
                             diary: []
                         }
@@ -210,7 +259,7 @@ export default {
             let showDayDay = 0
 
             // Put diary to table
-            diaries.forEach(diary => {
+            data.diaries.forEach(diary => {
                 let date = new Date(diary.stop_at)
                 let day = date.getDate()
                 let weekday = date.getDay()
@@ -219,12 +268,33 @@ export default {
 
                 let row = Math.ceil((day + startDay) / 7) - 1
 
-                rows[row][weekday].diary.push(diary)
+                rows.data[row][weekday].diary.push(diary)
 
                 if (date.toDateString() == new Date().toDateString()) {
                     showDayRow = row
                     showDayCol = weekday
                     showDayDay = day
+                }
+            })
+
+            // Put time to table
+            data.times.forEach(time => {
+                let date = new Date(time.created_at)
+                let day = date.getDate()
+                let weekday = date.getDay()
+
+                let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+
+                let row = Math.ceil((day + startDay) / 7) - 1
+
+                if (time.type == 0) {
+                    rows.data[row][weekday].time = time.time
+                }
+                else if (time.type == 1) {
+                    rows.timeWeek[row - 1] = time.time
+                }
+                else if (time.type == 2) {
+                    this.timeMonth = time.time
                 }
             })
 
@@ -247,18 +317,18 @@ export default {
         },
 
         setShowDay (row, col, day) {
-            this.showDay.diary = this.diaries[row][col].diary
+            this.showDay.diary = this.diaries.data[row][col].diary
             this.showDay.day = day
             this.showDay.title = `${day}/${this.month}/${this.year}`
 
             // Reset active style
-            for (let i = 0; i < this.diaries.length; i++) {
-                for (let j = 0; j < this.diaries[i].length; j++) {
-                    this.diaries[i][j].isActive = false
+            for (let i = 0; i < this.diaries.data.length; i++) {
+                for (let j = 0; j < this.diaries.data[i].length; j++) {
+                    this.diaries.data[i][j].isActive = false
                 }
             }
 
-            this.diaries[row][col].isActive = true
+            this.diaries.data[row][col].isActive = true
         },
 
         dayBackground (length) {
@@ -304,21 +374,20 @@ export default {
 <style scoped>
 table {
     width: 100%;
+    box-sizing: border-box;
     text-align: center;
     padding-top: 1rem;
     border-radius: .5rem;
 }
 
 table p {
-    display: inline-block;
+    display: block;
     cursor: pointer;
-    border-radius: 50%;
-    padding: .5rem .85rem;
+    text-align: center;
+    border-radius: .5rem;
+    padding: .5rem 1rem;
+    margin: 0;
     transition: box-shadow .5s;
-}
-
-table p:hover {
-    box-shadow: 3px 3px 3px #ff907f30;
 }
 
 .date {

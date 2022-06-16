@@ -47,7 +47,7 @@ export default {
 
   created () {
     if (!this.data.isLogin && location.pathname !== '/login' && location.pathname !== '/register') {
-      store.set('redirect', location.pathname)
+      store.set('redirect', location.pathname + location.search)
       this.$router.push('/login')
     }
 
