@@ -190,7 +190,7 @@ export default {
             }
             else {
                 this.showDay.diary = []
-                this.diaries = []
+                this.putDiary()
             }
         },
 
@@ -224,7 +224,7 @@ export default {
                 ]
             }
 
-            let date = new Date(data.diaries[0].stop_at)
+            let date = data ? new Date(data.diaries[0].stop_at) : new Date()
             let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
             let endDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
             let count = 1
@@ -256,47 +256,49 @@ export default {
             // For setShowDay
             let showDayRow = 0
             let showDayCol = 0
-            let showDayDay = 0
+            let showDayDay = new Date().getDate()
 
-            // Put diary to table
-            data.diaries.forEach(diary => {
-                let date = new Date(diary.stop_at)
-                let day = date.getDate()
-                let weekday = date.getDay()
+            if (data) {
+                // Put diary to table
+                data.diaries.forEach(diary => {
+                    let date = new Date(diary.stop_at)
+                    let day = date.getDate()
+                    let weekday = date.getDay()
 
-                let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+                    let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
 
-                let row = Math.ceil((day + startDay) / 7) - 1
+                    let row = Math.ceil((day + startDay) / 7) - 1
 
-                rows.data[row][weekday].diary.push(diary)
+                    rows.data[row][weekday].diary.push(diary)
 
-                if (date.toDateString() == new Date().toDateString()) {
-                    showDayRow = row
-                    showDayCol = weekday
-                    showDayDay = day
-                }
-            })
+                    if (date.toDateString() == new Date().toDateString()) {
+                        showDayRow = row
+                        showDayCol = weekday
+                        showDayDay = day
+                    }
+                })
 
-            // Put time to table
-            data.times.forEach(time => {
-                let date = new Date(time.created_at)
-                let day = date.getDate()
-                let weekday = date.getDay()
+                // Put time to table
+                data.times.forEach(time => {
+                    let date = new Date(time.created_at)
+                    let day = date.getDate()
+                    let weekday = date.getDay()
 
-                let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+                    let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
 
-                let row = Math.ceil((day + startDay) / 7) - 1
+                    let row = Math.ceil((day + startDay) / 7) - 1
 
-                if (time.type == 0) {
-                    rows.data[row][weekday].time = time.time
-                }
-                else if (time.type == 1) {
-                    rows.timeWeek[row - 1] = time.time
-                }
-                else if (time.type == 2) {
-                    this.timeMonth = time.time
-                }
-            })
+                    if (time.type == 0) {
+                        rows.data[row][weekday].time = time.time
+                    }
+                    else if (time.type == 1) {
+                        rows.timeWeek[row - 1] = time.time
+                    }
+                    else if (time.type == 2) {
+                        this.timeMonth = time.time
+                    }
+                })
+            }
 
             this.diaries = rows
             this.setShowDay(showDayRow, showDayCol, showDayDay)
