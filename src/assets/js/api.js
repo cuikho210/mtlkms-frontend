@@ -2,8 +2,14 @@ import store from "@/assets/js/store.js";
 
 class API {
     constructor () {
-        // this.host = 'https://cuikho.cf'
-        this.host = 'https://server.test'
+        this.host = '';
+
+        if (location.hostname == 'localhost') {
+            this.host = 'https://server.test'
+        }
+        else {
+            this.host = 'https://cuikho.cf'
+        }
     }
 
     get (url) {
