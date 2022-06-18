@@ -28,10 +28,6 @@ class Store {
     remove (key) {
         delete data[key];
     }
-    
-    clear () {
-        data = {};
-    }
 
     getAll () {
         return data;

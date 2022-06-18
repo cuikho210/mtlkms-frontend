@@ -33,6 +33,9 @@ export default {
 
                 store.set('isLogin', false)
                 store.set('user', {})
+                store.set('learningDiary', false)
+                sessionStorage.clear()
+
                 this.$router.push('/login')
             }).catch(() => {
                 this.data.isLoading = false
