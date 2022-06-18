@@ -56,7 +56,7 @@
                     </p>
 
                     <div
-                    v-if="col.time > 0"
+                    v-if="typeof col.time == 'number'"
                     class="text-secondary mt-1">
                         {{ col.time }}'
                         <br>
@@ -185,16 +185,11 @@ export default {
                 throw new Error(data.error)
             }
 
-            if (data.data.diaries.length > 0) {
-                this.putDiary(data.data)
-            }
-            else {
-                this.showDay.diary = []
-                this.putDiary()
-            }
+            this.showDay.diary = []
+            this.putDiary(data.data.diaries, data.data.times)
         },
 
-        putDiary (data) {
+        putDiary (diaries, times) {
             let cols = [
                 [], // Sun
                 [], // Mon
@@ -224,7 +219,7 @@ export default {
                 ]
             }
 
-            let date = data ? new Date(data.diaries[0].stop_at) : new Date()
+            let date = diaries.length > 0 ? new Date(diaries[0].stop_at) : new Date()
             let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
             let endDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
             let count = 1
@@ -238,7 +233,7 @@ export default {
                         rows.data[i][j] = {
                             day: day,
                             isActive: false,
-                            time: 0,
+                            time: null,
                             diary: []
                         }
                     }
@@ -258,9 +253,9 @@ export default {
             let showDayCol = 0
             let showDayDay = new Date().getDate()
 
-            if (data) {
+            if (diaries) {
                 // Put diary to table
-                data.diaries.forEach(diary => {
+                diaries.forEach(diary => {
                     let date = new Date(diary.stop_at)
                     let day = date.getDate()
                     let weekday = date.getDay()
@@ -277,9 +272,19 @@ export default {
                         showDayDay = day
                     }
                 })
+            }
 
+            if (times) {
+                this.putTimes(rows, times)
+            }
+
+            this.diaries = rows
+            this.setShowDay(showDayRow, showDayCol, showDayDay)
+        },
+
+        putTimes (rows, times) {
                 // Put time to table
-                data.times.forEach(time => {
+                times.forEach(time => {
                     let date = new Date(time.created_at)
                     let day = date.getDate()
                     let weekday = date.getDay()
@@ -298,10 +303,6 @@ export default {
                         this.timeMonth = time.time
                     }
                 })
-            }
-
-            this.diaries = rows
-            this.setShowDay(showDayRow, showDayCol, showDayDay)
         },
 
         parseMarkdown (text) {
