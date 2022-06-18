@@ -92,7 +92,8 @@ export default {
 
     methods: {
         isActive(link) {
-            return link.path == this.$route.path
+            let path = this.$route.path.split('/')
+            return link.path.replace('/', '') == path[1]
         }
     }
 }

@@ -50,7 +50,8 @@
                     @click="setShowDay(i, j, col.day)"
                     :style="{
                         backgroundColor: dayBackground(col.diary.length),
-                        outline: col.isActive ? '1px solid #000' : 'none'
+                        outline: col.isActive ? '1px solid #000' : 'none',
+                        boxShadow: col.isToday ? '3px 3px 1px #ff907f' : 'none'
                     }">
                         {{ col.day }}
                     </p>
@@ -230,11 +231,20 @@ export default {
                     let day = count - startDay
 
                     if (day > 0 && day <= endDay) {
+                        let isToday = false;
+
+                        if (this.month == new Date().getMonth() + 1 && this.year == new Date().getFullYear()) {
+                            if (new Date().getDate() == day) {
+                                isToday = true
+                            }
+                        }
+
                         rows.data[i][j] = {
                             day: day,
                             isActive: false,
                             time: null,
-                            diary: []
+                            diary: [],
+                            isToday: isToday
                         }
                     }
                     else {
