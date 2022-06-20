@@ -81,6 +81,17 @@ export default {
 
   computed: {
     ...mapState(['isLogin'])
+  },
+
+  watch: {
+    $route: {
+      immediate: true,
+      handler() {
+        if (innerWidth < 768) {
+          this.isMenuOpen = false
+        }
+      }
+    }
   }
 }
 </script>
