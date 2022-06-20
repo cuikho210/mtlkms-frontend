@@ -6,7 +6,7 @@
     </div>
 
     <form action="" @submit.prevent="updateAvatar()">
-        <img :src="avatarPreview" :alt="data.user.username" class="d-block mx-auto avatar-xl" />
+        <img :src="avatarPreview" :alt="user.username" class="d-block mx-auto avatar-xl" />
         <br>
 
         <p>Cập nhật ảnh đại diện</p>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import api from '@/store/api'
 import MessagePopup from '@/components/MessagePopup.vue'
 
@@ -94,8 +94,8 @@ export default {
     data () {
         return {
             form: {
-                name: this.user.name,
-                slogan: this.user.slogan
+                name: this.getUserName(),
+                slogan: this.getUserSlogan()
             },
 
             passwordForm: {
@@ -105,7 +105,7 @@ export default {
 
             rePassword: '',
 
-            avatarPreview: api.getAvatarURL(this.user.username),
+            avatarPreview: api.getAvatarURL(this.getUserUsername()),
             avatarFile: null,
 
             isLoading: false,
@@ -126,6 +126,7 @@ export default {
     methods : {
         ...mapMutations(['setIsLoading']),
         ...mapActions(['updateProfile', 'updatePassword']),
+        ...mapGetters(['getUserName', 'getUserSlogan', 'getUserUsername']),
 
         updateAvatar () {
             if (!this.avatarFile) {
