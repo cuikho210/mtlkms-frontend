@@ -60,7 +60,7 @@
                         backgroundColor: dayBackground(col.diary.length),
                         outline: col.isActive ? '1px solid #000' : 'none',
                         boxShadow: col.isToday ? '3px 3px 1px #ff907f' : 'none',
-                        color: col.diary.length > 9 ? '#fff' : '#000'
+                        color: col.diary.length > 8 ? '#fff' : '#000'
                     }">
                         {{ col.day }}
                     </p>
@@ -169,18 +169,21 @@ export default {
 
             dayColors: [
                 '#ffffff',
-                '#aaffd7',
-                '#56ffb0',
-                '#00ff87',
-                '#29e96c',
-                '#06cd4b',
-                '#00b23e',
-                '#009935',
-                '#007f2c',
-                '#00661b',
-                '#004c14',
-                '#00330d',
-                '#002601'
+                '#ccffe9',
+                '#99ffd4',
+                '#65ffbf',
+                '#32ffa9',
+                '#00ff94',
+                '#00e585',
+                '#00cc76',
+                '#00b268',
+                '#009959',
+                '#007f4a',
+                '#00663b',
+                '#004c2c',
+                '#00331d',
+                '#00190e',
+                '#000000',
             ]
         }
     },
