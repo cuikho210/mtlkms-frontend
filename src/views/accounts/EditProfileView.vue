@@ -22,7 +22,7 @@
     </form>
     <hr>
 
-    <form action="" @submit.prevent="updateProfile()">
+    <form action="" @submit.prevent="startUpdateProfile()">
         <p>Cập nhật thông tin cá nhân</p>
 
         <label class="input">
@@ -44,7 +44,7 @@
     </form>
     <hr>
 
-    <form action="" @submit.prevent="updatePassword()">
+    <form action="" @submit.prevent="startUpdatePassword()">
         <p>Cập nhật mật khẩu</p>
 
         <label class="input">
@@ -172,7 +172,7 @@ export default {
             })
         },
 
-        async updateProfile () {
+        async startUpdateProfile () {
             if (!this.form.name || !this.form.slogan) {
                 this.showMessage(
                     'Lỗi',
@@ -183,14 +183,10 @@ export default {
                 return
             }
 
-            try {
-                await this.updateProfile(this.form)
+            let isSuccess;
 
-                this.showMessage(
-                    'Thành công',
-                    'Cập nhật thông tin thành công',
-                    'success'
-                )
+            try {
+                isSuccess = await this.updateProfile(this.form)
             }
             catch (err) {
                 console.log(err.message)
@@ -206,9 +202,17 @@ export default {
                     'error'
                 )
             }
+
+            if (!isSuccess) return
+
+            this.showMessage(
+                'Thành công',
+                'Cập nhật thông tin thành công',
+                'success'
+            )
         },
 
-        async updatePassword () {
+        async startUpdatePassword () {
             if (!this.passwordForm.oldPassword || !this.passwordForm.newPassword) {
                 this.showMessage(
                     'Lỗi',
@@ -230,7 +234,7 @@ export default {
             }
 
             try {
-                await this.updatePassword(this.passwordForm)
+                if (!(await this.updatePassword(this.passwordForm))) return
 
                 this.showMessage(
                     'Thành công',

@@ -48,8 +48,8 @@ class API {
         })
     }
 
-    updateAvatar (username, data) {
-        return fetch(`${this.host}/user/${username}/avatar`, {
+    updateAvatar (data) {
+        return fetch(`${this.host}/user/avatar`, {
             method: 'PUT',
             credentials: 'include',
             body: data
