@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import store from '/src/assets/js/store'
 import Profile from '/src/components/user/ProfileComponent.vue'
 import ContributionDiary from '@/components/study_diary/ContributionDiary.vue'
 
@@ -23,7 +22,7 @@ export default {
 
     data () {
         return {
-            data: store.getAll()
+            
         }
     },
 

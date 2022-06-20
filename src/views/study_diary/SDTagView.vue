@@ -109,12 +109,12 @@
 </template>
 
 <script>
-import store from '@/assets/js/store'
-import api from '@/assets/js/api'
+import { mapState, mapMutations } from 'vuex' 
+import { marked } from 'marked'
+import api from '@/store/api'
 import MessagePopup from '@/components/MessagePopup.vue'
 import TextArea from '@/components/TextArea.vue'
 import ContributionDiary from '@/components/study_diary/ContributionDiary.vue'
-import { marked } from 'marked'
 
 export default {
     name: 'SDTagView',
@@ -131,8 +131,6 @@ export default {
 
     data () {
         return {
-            data: store.getAll(),
-
             tagData: {
                 id: 0,
                 name: '',
@@ -175,8 +173,9 @@ export default {
     },
 
     methods: {
+        ...mapMutations(['setTitle', 'setIsLoading', 'setLearningDiary']),
         async getTagData () {
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             let result, data;
 
@@ -196,16 +195,20 @@ export default {
 
             this.tagData = data.data
 
-            if (this.data.learningDiary.sdtag == this.tagData.id) {
-                this.learningDiaryData = this.data.learningDiary
+            // Change title
+            document.title = this.tagData.name + ' - Study Diary - MTLKMS'
+            this.setTitle(document.title)
+
+            if (this.learningDiary.sdtag == this.tagData.id) {
+                this.learningDiaryData = this.learningDiary
                 this.startStopwatch()
             }
 
-            this.data.isLoading = false
+            this.setIsLoading(false)
         },
 
         startLearn () {
-            if (this.data.learningDiary) {
+            if (this.learningDiary) {
                 this.showMessage(
                     'Lỗi',
                     'Bạn đang học môn khác rồi!',
@@ -215,17 +218,19 @@ export default {
                 return
             }
 
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             api.post('/study-diary/diary', {
                 sdtag: this.tagData.id
             }).then(res => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 res.json().then(data => {
                     if (res.status === 200) {
-                        this.learningDiaryData = data.data
-                        this.data.learningDiary = this.learningDiaryData
+                        let learningDiary = data.data
+                        learningDiary.name = this.tagData.name
+                        this.learningDiaryData = learningDiary
+                        this.setLearningDiary(learningDiary)
 
                         sessionStorage.removeItem('tags')
 
@@ -242,7 +247,8 @@ export default {
                 })
             }).catch(err => {
                 console.log(err)
-                this.data.isLoading = false
+                this.setIsLoading(false)
+
                 this.showMessage(
                     'Lỗi',
                     'Không thể kết nối đến máy chủ, vui lòng thử lại sau',
@@ -261,7 +267,7 @@ export default {
                 return
             }
 
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             let result = await api.put('/study-diary/diary', {
                 id: this.learningDiaryData.id,
@@ -280,8 +286,9 @@ export default {
                 throw new Error(data.error)
             }
 
+            this.setLearningDiary(false)
+
             this.learningDiaryData.is_learning = 0
-            this.data.learningDiary = false
             this.stopLearnPopup.isDisplay = false
             this.stopLearnPopup.log = ''
 
@@ -295,7 +302,7 @@ export default {
                 'success'
             )
 
-            this.data.isLoading = false
+            this.setIsLoading(false)
         },
 
         minutesToStr (minutes) {
@@ -346,6 +353,8 @@ export default {
     },
 
     computed: {
+        ...mapState(['learningDiary']),
+
         showStopwatchTime () {
             let minutes = Math.floor(this.stopwatch / 60)
             let seconds = this.stopwatch % 60

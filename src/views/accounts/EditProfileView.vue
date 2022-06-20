@@ -80,8 +80,8 @@
 </template>
 
 <script>
-import store from '@/assets/js/store'
-import api from '@/assets/js/api'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import api from '@/store/api'
 import MessagePopup from '@/components/MessagePopup.vue'
 
 export default {
@@ -93,11 +93,9 @@ export default {
 
     data () {
         return {
-            data: store.getAll(),
-            
             form: {
-                name: store.get('user').name,
-                slogan: store.get('user').slogan
+                name: this.user.name,
+                slogan: this.user.slogan
             },
 
             passwordForm: {
@@ -107,7 +105,7 @@ export default {
 
             rePassword: '',
 
-            avatarPreview: api.getAvatarURL(store.get('user').username),
+            avatarPreview: api.getAvatarURL(this.user.username),
             avatarFile: null,
 
             isLoading: false,
@@ -121,7 +119,14 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState(['user']),
+    },
+
     methods : {
+        ...mapMutations(['setIsLoading']),
+        ...mapActions(['updateProfile', 'updatePassword']),
+
         updateAvatar () {
             if (!this.avatarFile) {
                 this.showMessage(
@@ -136,16 +141,16 @@ export default {
             let data = new FormData()
             data.append('avatar', this.avatarFile)
 
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             api.updateAvatar(data)
             .then(res => {
-                this.data.isLoading = false
-
                 if (res.status == 200) {
                     location.reload()
                 }
                 else {
+                    this.setIsLoading(false)
+
                     this.showMessage(
                         'Lỗi!',
                         'Có lỗi xảy ra, vui lòng thử lại',
@@ -154,7 +159,7 @@ export default {
                 }
             })
             .catch(err => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 console.log(err)
 
@@ -166,7 +171,7 @@ export default {
             })
         },
 
-        updateProfile () {
+        async updateProfile () {
             if (!this.form.name || !this.form.slogan) {
                 this.showMessage(
                     'Lỗi',
@@ -177,54 +182,32 @@ export default {
                 return
             }
 
-            this.data.isLoading = true
+            try {
+                await this.updateProfile(this.form)
 
-            api.put('/user', this.form)
-            .then(res => {
-                this.data.isLoading = false
+                this.showMessage(
+                    'Thành công',
+                    'Cập nhật thông tin thành công',
+                    'success'
+                )
+            }
+            catch (err) {
+                console.log(err.message)
 
-                if (res.status == 200) {
-                    res.json().then(data => {
-                        this.data.user = data.user
+                let msg = ''
 
-                        this.showMessage(
-                            'Thành công',
-                            'Cập nhật thông tin cá nhân thành công',
-                            'success'
-                        )
-                    })
-                }
-                else {
-                    res.json().then(data => {
-                        console.log(data.error)
-
-                        let msg = ''
-
-                        if (data.error == 'Invalid name') msg = 'Tên hiển thị phải lớn hơn 2 và nhỏ hơn 50 kí tự'
-                        else msg = 'Có lỗi xảy ra, vui lòng thử lại'
-
-                        this.showMessage(
-                            'Lỗi!',
-                            msg,
-                            'error'
-                        )
-                    })
-                }
-            })
-            .catch(err => {
-                this.data.isLoading = false
-
-                console.log(err)
+                if (err.message == 'Invalid name') msg = 'Tên hiển thị phải lớn hơn 2 và nhỏ hơn 50 kí tự'
+                else msg = 'Có lỗi xảy ra, vui lòng thử lại'
 
                 this.showMessage(
                     'Lỗi!',
-                    'Không thể kết nối đến máy chủ',
+                    msg,
                     'error'
                 )
-            })
+            }
         },
 
-        updatePassword () {
+        async updatePassword () {
             if (!this.passwordForm.oldPassword || !this.passwordForm.newPassword) {
                 this.showMessage(
                     'Lỗi',
@@ -245,52 +228,32 @@ export default {
                 return
             }
 
-            this.data.isLoading = true
+            try {
+                await this.updatePassword(this.passwordForm)
 
-            api.put('/user/password', this.passwordForm)
-            .then(res => {
-                this.data.isLoading = false
+                this.showMessage(
+                    'Thành công',
+                    'Cập nhật mật khẩu thành công',
+                    'success'
+                )
 
-                if (res.status == 200) {
-                    res.json().then(() => {
-                        this.showMessage(
-                            'Thành công',
-                            'Cập nhật mật khẩu thành công',
-                            'success'
-                        )
-                    })
+                this.$router.push('/profile')
+            }
+            catch (err) {
+                console.log(err.message)
 
-                    this.$router.push('/profile')
-                }
-                else {
-                    res.json().then(data => {
-                        console.log(data.error)
+                let msg = ''
 
-                        let msg = ''
-
-                        if (data.error == 'Invalid password') msg = 'Mật khẩu phải từ 6 kí tự, bao gồm chữ in hoa, chữ in thường, số và kí tự đặc biệt'
-                        else if (data.error == 'Old password is incorrect') msg = 'Mật khẩu cũ không chính xác'
-                        else msg = 'Có lỗi xảy ra, vui lòng thử lại'
-
-                        this.showMessage(
-                            'Lỗi!',
-                            msg,
-                            'error'
-                        )
-                    })
-                }
-            })
-            .catch(err => {
-                this.data.isLoading = false
-                
-                console.log(err)
+                if (err.message == 'Invalid password') msg = 'Mật khẩu phải từ 6 kí tự, bao gồm chữ in hoa, chữ in thường, số và kí tự đặc biệt'
+                else if (err.message == 'Old password is incorrect') msg = 'Mật khẩu cũ không chính xác'
+                else msg = 'Có lỗi xảy ra, vui lòng thử lại'
 
                 this.showMessage(
                     'Lỗi!',
-                    'Không thể kết nối đến máy chủ',
+                    msg,
                     'error'
                 )
-            })
+            }
         },
 
         onchangeAvatar (e) {

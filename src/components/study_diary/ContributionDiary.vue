@@ -115,8 +115,8 @@
 </template>
 
 <script>
-import api from '@/assets/js/api'
-import store from '@/assets/js/store'
+import { mapState, mapMutations } from 'vuex'
+import api from '@/store/api'
 import { marked } from 'marked'
 
 export default {
@@ -124,7 +124,7 @@ export default {
 
     props: {
         // User id
-        user: {
+        userID: {
             type: Number,
             default: 0
         },
@@ -147,7 +147,6 @@ export default {
 
     data () {
         return {
-            data: store.getAll(),
             diaries: [],
             showDay: {
                 title: 'Hôm nay',
@@ -161,26 +160,30 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState(['user'])
+    },
+
     methods: {
+        ...mapMutations(['setIsLoading']),
+
         async getDiaries () {
             let url = '/study-diary/diary/'
+            let userID = this.userID || this.user.id
 
-            if (this.user != 0) {
-                url += `${this.user}/${this.year}/${this.month}`
-            }
-            else if (this.tag != 0) {
-                url += `${this.data.user.id}/${this.year}/${this.month}/${this.tag}`
+            if (this.tag != 0) {
+                url += `${userID}/${this.year}/${this.month}/${this.tag}`
             }
             else {
-                url += `${this.data.user.id}/${this.year}/${this.month}`
+                url += `${userID}/${this.year}/${this.month}`
             }
 
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             let result = await api.get(url)
             let data = await result.json()
 
-            this.data.isLoading = false
+            this.setIsLoading(false)
 
             if (result.status != 200) {
                 throw new Error(data.error)
@@ -220,7 +223,7 @@ export default {
                 ]
             }
 
-            let date = diaries.length > 0 ? new Date(diaries[0].stop_at) : new Date()
+            let date = diaries.length > 0 ? new Date(diaries[0].stop_at) : new Date(this.year, this.month - 1, 1)
             let startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
             let endDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
             let count = 1

@@ -10,10 +10,7 @@
   </Transition>
 
   <div id="main" :class="{noMarginLeft: !isMenuOpen}">
-    <div id="navbar">
-      <span @click="toggleMenu()" class="material-icons">menu</span>
-      {{ $route.meta.title }}
-    </div>
+    <NavBar @toggleMenu="toggleMenu()" />
 
     <router-view v-slot="{ Component }">
       <Transition name="fade-in-fast" mode="out-in">
@@ -33,21 +30,23 @@
 ~^~^~^`- ~^ ~^ '~^~^~^~
 */
 
+import { mapState, mapMutations } from 'vuex'
 import AppMenu from './components/AppMenu.vue'
+import NavBar from './components/NavBar.vue'
 import LoadingEffect from '@/components/LoadingEffect.vue'
-import store from '@/assets/js/store'
 
 export default {
   name: 'App',
 
   components: {
     AppMenu,
-    LoadingEffect
+    LoadingEffect,
+    NavBar
   },
 
   created () {
-    if (!this.data.isLogin && location.pathname !== '/login' && location.pathname !== '/register') {
-      store.set('redirect', location.pathname + location.search)
+    if (!this.isLogin && location.pathname !== '/login' && location.pathname !== '/register') {
+      this.setRedirect(location.pathname + location.search)
       this.$router.push('/login')
     }
 
@@ -68,30 +67,20 @@ export default {
 
   data () {
     return {
-      isMenuOpen: false,
-      data: store.getAll()
-    }
-  },
-
-  watch: {
-    $route: {
-      immediate: true,
-
-      // Change title when route changes
-      handler(to) {
-        document.title = to.meta.title || 'MTLKMS'
-        
-        if (innerWidth < 768) {
-          this.isMenuOpen = false
-        }
-      }
+      isMenuOpen: false
     }
   },
 
   methods: {
+    ...mapMutations(['setRedirect']),
+
     toggleMenu () {
       this.isMenuOpen = !this.isMenuOpen
     }
+  },
+
+  computed: {
+    ...mapState(['isLogin'])
   }
 }
 </script>
@@ -174,36 +163,6 @@ hr {
 #main {
   position: relative;
   transition: margin-left 0.5s;
-}
-
-#navbar {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: .25rem;
-  margin: 0;
-  margin-bottom: 1rem;
-  background: #ffffffaa;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  backdrop-filter: blur(3px);
-  z-index: 20;
-}
-
-#navbar span {
-  margin-right: .25rem;
-  border-radius: 50%;
-  padding: .75rem;
-  transition: background-color .5s;
-}
-
-#navbar span:hover {
-  cursor: pointer;
-  background-color: #f5f5f5;
 }
 
 @media screen and (max-width: 768px) {

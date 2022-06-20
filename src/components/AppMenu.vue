@@ -1,22 +1,22 @@
 <template>
 <div>
     <div id="appmenu-top">
-        <div v-if="!data.isLogin">
+        <div v-if="!isLogin">
             <img src="/img/icons/180.png" class="avatar d-block mx-auto">
             <h3>MTLKMS</h3>
             <hr>
             <p>Học hành chăm chỉ :(</p>
         </div>
         <div v-else>
-            <img :src="data.avatarURL" class="avatar d-block mx-auto">
-            <h3>Xin chào {{ data.user.name }}!</h3>
+            <img :src="user.avatarURL" class="avatar d-block mx-auto">
+            <h3>Xin chào {{ user.name }}!</h3>
             <hr>
             <p>
-                <span v-if="data.learningDiary">
+                <span v-if="learningDiary">
                     Bạn đang học môn
                     <router-link
-                    :to="'/study-diary/' + data.learningDiary.sdtag">
-                        {{ data.learningDiary.name }}
+                    :to="'/study-diary/' + learningDiary.sdtag">
+                        {{ learningDiary.name }}
                     </router-link>
                 </span>
                 <span v-else>
@@ -30,7 +30,7 @@
 
     <div>
         <div v-for="(link, index) in links" :key="index">
-            <router-link :to="link.path" :class="{active: isActive(link), link: true}" v-if="data.isLogin == link.auth">
+            <router-link :to="link.path" :class="{active: isActive(link), link: true}" v-if="isLogin == link.auth">
                 <span class="material-icons">{{ link.icon }}</span>
                 {{ link.name }}
             </router-link>
@@ -40,15 +40,13 @@
 </template>
 
 <script>
-import store from '/src/assets/js/store'
+import { mapState } from 'vuex'
 
 export default {
     name: 'AppMenu',
 
     data () {
         return {
-            data: store.getAll(),
-
             links: [
                 {
                     name: 'Trang Chủ',
@@ -95,6 +93,10 @@ export default {
             let path = this.$route.path.split('/')
             return link.path.replace('/', '') == path[1]
         }
+    },
+
+    computed: {
+        ...mapState(['user', 'isLogin', 'learningDiary'])
     }
 }
 </script>

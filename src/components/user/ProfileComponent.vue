@@ -1,28 +1,30 @@
 <template>
 <div class="main">
-    <img :src="data.avatarURL" :alt="data.user.username" class="avatar-xl">
+    <img :src="user.avatarURL" :alt="user.username" class="avatar-xl">
 
     <div>
-        <h3>{{ data.user.name }}</h3>
-        <p class="text-secondary">{{ data.user.username }} - Tham gia lúc {{ convertTimestampToLocalDate(data.user.created_at) }}</p>
-        <p>{{ data.user.slogan }}</p>
+        <h3>{{ user.name }}</h3>
+        <p class="text-secondary">{{ user.username }} - Tham gia lúc {{ convertTimestampToLocalDate(user.created_at) }}</p>
+        <p>{{ user.slogan }}</p>
         <p><router-link to="/profile/edit">[Edit Profile]</router-link></p>
     </div>
 </div>
 </template>
 
 <script>
-import store from '@/assets/js/store'
-import api from '@/assets/js/api'
+import { mapState } from 'vuex'
 
 export default {
     name: 'UserProfile',
 
     data () {
         return {
-            data: store.getAll(),
-            api: api
+
         }
+    },
+
+    computed: {
+        ...mapState(['user']),
     },
 
     methods: {

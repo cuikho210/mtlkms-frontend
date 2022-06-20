@@ -1,5 +1,3 @@
-import store from "@/assets/js/store.js";
-
 class API {
     constructor () {
         this.host = 'https://server.test'
@@ -11,13 +9,6 @@ class API {
             method: 'GET',
             credentials: 'include'
         })
-    }
-
-    setAvatarURL () {
-        let username = store.get('user').username
-        let avatarURL = this.getAvatarURL(username)
-
-        store.set('avatarURL', avatarURL)
     }
 
     getAvatarURL (username) {
@@ -57,26 +48,12 @@ class API {
         })
     }
 
-    updateAvatar (data) {
-        let username = store.get('user').username
-
+    updateAvatar (username, data) {
         return fetch(`${this.host}/user/${username}/avatar`, {
             method: 'PUT',
             credentials: 'include',
             body: data
         })
-    }
-
-    async getLearningDiary () {
-        let result = await this.get('/study-diary/diary/' + store.get('user').id)
-        let data = await result.json()
-
-        if (result.status == 200) {
-            return data.data
-        }
-        else {
-            throw new Error(data.error)
-        }
     }
 }
 

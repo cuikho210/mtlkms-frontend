@@ -227,9 +227,9 @@
 </template>
 
 <script>
-import store from '@/assets/js/store'
+import { mapState, mapMutations } from 'vuex'
 import MessagePopup from '@/components/MessagePopup.vue'
-import api from '@/assets/js/api'
+import api from '@/store/api'
 
 export default {
     name: 'SDListView',
@@ -246,7 +246,6 @@ export default {
 
     data () {
         return {
-            data: store.getAll(),
             tags: [],
             learningTags: [],
 
@@ -292,17 +291,18 @@ export default {
     },
 
     methods: {
+        ...mapMutations(['setIsLoading']),
         getTags () {
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
-            api.get('/study-diary/' + this.data.user.id).then(res => {
-                this.data.isLoading = false
+            api.get('/study-diary/' + this.user.id).then(res => {
+                this.setIsLoading(false)
 
                 if (res.status === 200) {
                     res.json().then(data => {
-                        if (this.data.learningDiary) {
+                        if (this.learningDiary) {
                             data.data.forEach(tag => {
-                                if (tag.id == this.data.learningDiary.sdtag) {
+                                if (tag.id == this.learningDiary.sdtag) {
                                     this.learningTags.push(tag)
                                 }
                                 else {
@@ -330,7 +330,7 @@ export default {
             }).catch(err => {
                 console.log(err)
 
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 this.showMessage(
                     'Lỗi',
@@ -395,7 +395,7 @@ export default {
         },
 
         createTag () {
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             api.post('/study-diary', {
                 name: this.editTagData.name,
@@ -403,7 +403,7 @@ export default {
                 bg_color: this.editTagData.bgColor,
                 text_color: this.editTagData.textColor
             }).then(res => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 if (res.status == 200) {
                     res.json().then(data => {
@@ -431,7 +431,7 @@ export default {
                     })
                 }
             }).catch(err => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 this.showMessage(
                     'Lỗi',
@@ -446,7 +446,7 @@ export default {
         },
 
         updateTag () {
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             api.put('/study-diary', {
                 id: this.editTagData.id,
@@ -455,7 +455,7 @@ export default {
                 bg_color: this.editTagData.bgColor,
                 text_color: this.editTagData.textColor
             }).then(res => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 if (res.status == 200) {
                     res.json().then(data => {
@@ -483,7 +483,7 @@ export default {
                     })
                 }
             }).catch(err => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 this.showMessage(
                     'Lỗi',
@@ -498,12 +498,12 @@ export default {
         },
 
         deleteTag () {
-            this.data.isLoading = true
+            this.setIsLoading(true)
 
             api.delete('/study-diary', {
                 id: this.deleteTagData.id
             }).then(res => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 if (res.status == 200) {
                     res.json().then(() => {
@@ -531,7 +531,7 @@ export default {
                     })
                 }
             }).catch(err => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
 
                 this.showMessage(
                     'Lỗi',
@@ -580,6 +580,10 @@ export default {
                 return false
             }
         }
+    },
+
+    computed: {
+        ...mapState(['learningDiary', 'user'])
     }
 }
 </script>

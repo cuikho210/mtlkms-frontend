@@ -56,20 +56,17 @@
 </style>
 
 <script>
-import api from '/src/assets/js/api'
-import store from '/src/assets/js/store'
+import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
     name: 'LoginView',
 
     created () {
-        this.checkLogin()
+        this.checkIfLoggedIn()
     },
 
     data () {
         return {
-            data: store.getAll(),
-
             form: {
                 username: '',
                 password: ''
@@ -81,38 +78,28 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState(['isLogin', 'redirect'])
+    },
+
     methods: {
-        submitForm() {
-            this.data.isLoading = true
+        ...mapActions(['login', 'checkLogin', 'getLearningDiary']),
+        ...mapMutations(['setRedirect']),
 
-            api.post('/login', this.form)
-            .then(res => {
-                this.data.isLoading = false
+        async submitForm() {
+            try {
+                await this.login(this.form)
+            }
+            catch (err) {
+                this.isSuccess = false
+                this.apiLog = err.message
+                this.showLog()
+            }
 
-                if (res.status === 200) {
-                    res.json().then(data => {
-                        this.isSuccess = true
-                        this.apiLog = '';
-                        this.log = "Đăng ký thành công"
-                        store.set('user', data.user)
-                        store.set('isLogin', true)
-                        api.setAvatarURL()
-                        this.$router.push('/')
-                    })
-                }
-                else {
-                    res.json().then(data => {
-                        this.isSuccess = false
-                        this.apiLog = data.error
-                        this.showLog()
-                    })
-                }
-            })
-            .catch(err => {
-                this.data.isLoading = false
-
-                console.log(err)
-            })
+            this.isSuccess = true
+            this.apiLog = ''
+            this.log = 'Đăng nhập thành công'
+            this.$router.push('/')
         },
 
         showLog () {
@@ -120,46 +107,29 @@ export default {
             else this.log = 'Đã có lỗi xảy ra'
         },
 
-        redirect () {
-            if (store.get('redirect') && store.get('redirect') != '/login' && store.get('redirect') != '/register') {
-                this.$router.push(store.get('redirect'))
-                store.set('redirect', null)
+        runRedirect () {
+            if (this.redirect && this.redirect != '/login' && this.redirect != '/register') {
+                this.$router.push(this.redirect)
+                this.setRedirect(null)
             }
             else {
                 this.$router.push('/')
             }
         },
 
-        async checkLogin () {
-            if (store.get('isLogin')) {
-                this.redirect()
-            }
-            
-            this.data.isLoading = true
+        async checkIfLoggedIn () {
+            if (this.isLogin) this.runRedirect()
 
-            let result = await api.get('/check-login')
-            let data = await result.json()
+            await this.checkLogin()
 
-            this.data.isLoading = false
-
-            if (result.status !== 200) {
-                throw new Error('Check login failed')
-            }
-
-            store.set('user', data.user)
-            store.set('isLogin', true)
-            api.setAvatarURL()
-
-            // Get learning diary
             try {
-                let diary = await api.getLearningDiary()
-                store.set('learningDiary', diary)
+                await this.getLearningDiary()
             }
             catch (err) {
-                console.log(err)
+                console.log('Bạn không đang học môn nào - ', err.message)
             }
 
-            this.redirect()
+            this.runRedirect()
         }
     }
 }

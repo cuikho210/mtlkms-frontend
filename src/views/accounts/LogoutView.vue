@@ -12,33 +12,28 @@
 </template>
 
 <script>
-import store from '@/assets/js/store'
-import api from '@/assets/js/api'
+import { mapMutations } from 'vuex'
+import api from '@/store/api'
 
 export default {
     name: 'LogoutView',
 
     data () {
         return {
-            data: store.getAll()
+            
         }
     },
 
     methods: {
+        ...mapMutations(['setIsLoading']),
+
         logout() {
-            this.data.isLoading = true
+            this.setIsLoading(true)
             
             api.get('/logout').then(() => {
-                this.data.isLoading = false
-
-                store.set('isLogin', false)
-                store.set('user', {})
-                store.set('learningDiary', false)
-                sessionStorage.clear()
-
-                this.$router.push('/login')
+                location.href = '/login'
             }).catch(() => {
-                this.data.isLoading = false
+                this.setIsLoading(false)
             })
         }
     }

@@ -74,16 +74,13 @@
 </style>
 
 <script>
-import api from '/src/assets/js/api'
-import store from '/src/assets/js/store'
+import { mapActions, mapMutations } from 'vuex'
 
 export default {
     name: 'RegisterView',
 
     data () {
         return {
-            data: store.getAll(),
-
             form: {
                 name: '',
                 username: '',
@@ -99,43 +96,29 @@ export default {
     },
     
     methods: {
-        submitForm () {
+        ...mapActions(['register']),
+        ...mapMutations(['setIsLoading']),
+
+        async submitForm () {
             if (this.form.password !== this.form.repassword) {
                 this.log = 'Mật khẩu không khớp'
                 this.isSuccess = false
                 return
             }
 
-            this.data.isLoading = true
+            try {
+                await this.register(this.form)
 
-            api.post('/register', this.form)
-            .then(res => {
-                this.data.isLoading = false
-
-                if (res.status === 200) {
-                    res.json().then(data => {
-                        this.isSuccess = true
-                        this.apiLog = '';
-                        this.log = "Đăng ký thành công"
-                        store.set('user', data.user)
-                        store.set('isLogin', true)
-                        api.setAvatarURL()
-                        this.$router.push('/')
-                    })
-                }
-                else {
-                    res.json().then(data => {
-                        this.isSuccess = false
-                        this.apiLog = data.error
-                        this.showLog()
-                    })
-                }
-            })
-            .catch(err => {
-                this.data.isLoading = false
-                
-                console.log(err)
-            })
+                this.isSuccess = true
+                this.apiLog = ''
+                this.log = "Đăng ký thành công"
+                this.$router.push('/')
+            }
+            catch (err) {
+                this.isSuccess = false
+                this.apiLog = err.message
+                this.showLog()
+            }
         },
 
         showLog () {

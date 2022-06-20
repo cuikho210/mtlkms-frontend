@@ -1,7 +1,7 @@
 <template>
 <div>
     <Transition name="fade-in">
-        <div class="main" v-show="data.isLoading">
+        <div class="main" v-show="isLoading">
             <div class="static-bar"></div>
             <div class="move-bar"></div>
         </div>
@@ -10,15 +10,19 @@
 </template>
 
 <script>
-import store from '@/assets/js/store'
+import { mapState } from 'vuex'
 
 export default {
     name: 'LoadingEffect',
 
     data () {
         return {
-            data: store.getAll()
+            
         }
+    },
+
+    computed: {
+        ...mapState(['isLoading'])
     }
 }
 </script>
