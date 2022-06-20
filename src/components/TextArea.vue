@@ -55,12 +55,31 @@ export default {
         },
 
         onKeyDown (e) {
+            let startText = this.value.slice(0, e.target.selectionStart)
+            let endText = this.value.slice(e.target.selectionStart)
+
             if (e.key == 'Tab') {
                 e.preventDefault()
-                let startText = this.value.slice(0, e.target.selectionStart)
-                let endText = this.value.slice(e.target.selectionStart)
                 this.value = `${startText}\t${endText}`
                 e.selectionEnd = e.selectionStart + 1
+            }
+
+            if (e.key == 'Enter') {
+                let lastLine = startText.split('\n').pop()
+                let firstChar = lastLine.trim().slice(0, 1)
+                let insertText = ''
+                
+                if (firstChar == '>') insertText = '>'
+                else if (firstChar == '*') insertText = '*'
+                else if (firstChar == '1.') insertText = '1.'
+                else if (firstChar == '-') insertText = '-'
+                else if (firstChar == '+') insertText = '+'
+                
+                if (insertText) {
+                    e.preventDefault()
+                    this.value = `${startText}\n${insertText} ${endText}`
+                    e.selectionEnd = e.selectionStart + insertText.length + 1
+                }
             }
         }
     }
