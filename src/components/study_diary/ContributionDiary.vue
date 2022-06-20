@@ -126,9 +126,18 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import api from '@/store/api'
-
+import hljs from 'highlight.js'
+import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-marked.setOptions({sanitize: true})
+import 'highlight.js/styles/github.css';
+
+marked.setOptions({
+    highlight: function(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+        return hljs.highlight(code, { language }).value
+    },
+    langPrefix: 'hljs language-'
+})
 
 export default {
     name: 'ContributionDiary',
@@ -349,7 +358,9 @@ export default {
         },
 
         parseMarkdown (text) {
-            return marked.parse(text)
+            let markedText = marked.parse(text)
+            let cleanText = DOMPurify.sanitize(markedText, {FORBID_TAGS: ['style'], FORBID_ATTR: ['style']})
+            return cleanText
         },
 
         caculateTime (start, end) {

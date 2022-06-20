@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "dompurify": "^2.3.8",
+    "highlight.js": "^11.5.1",
     "marked": "^4.0.17",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",

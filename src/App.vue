@@ -430,31 +430,34 @@ textarea {
 /* Quote                                               */
 /* --------------------------------------------------- */
 
-.code {
-  display: block;
-  font-family: monospace;
-  font-size: 13px;
-  color: #333;
-  background-color: #ff907f30;
-  border-radius: .25rem;
-  padding: 1rem;
-  margin: .5rem auto;
-  box-sizing: border-box;
-  max-width: 100%;
-  overflow-x: scroll;
-}
-
 .quote {
   display: block;
-  color: #222;
-  background-color: #ff907f10;
+  color: #000;
+  background-color: #fff;
   border-radius: 0 .25rem .25rem 0;
   padding: 1rem;
   margin: .5rem auto;
   box-sizing: border-box;
   max-width: 100%;
   overflow-x: scroll;
+  border-left: 3px solid #ff907f;
+}
+
+code {
+  border-radius: .25rem;
+  background-color: #fafafa !important;
+}
+
+ul {
+  list-style: ' - '
+}
+
+blockquote {
+  border-radius: 0 .25rem .25rem 0;
   border-left: 1px solid #ff907f;
+  background-color: #ff907f10;
+  padding: .25rem .75rem;
+  color: #6c757d;
 }
 
 /* --------------------------------------------------- */
