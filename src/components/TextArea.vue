@@ -14,6 +14,7 @@
     :rows="rows"
     :placeholder="placeholder"
     v-model="value"
+    @keydown="onKeyDown($event)"
     ></textarea>
 </div>
 </template>
@@ -51,6 +52,16 @@ export default {
     methods: {
         insert(text) {
             this.value = this.value + text
+        },
+
+        onKeyDown (e) {
+            if (e.key == 'Tab') {
+                e.preventDefault()
+                let startText = this.value.slice(0, e.target.selectionStart)
+                let endText = this.value.slice(e.target.selectionStart)
+                this.value = `${startText}\t${endText}`
+                e.selectionEnd = e.selectionStart + 1
+            }
         }
     }
 }
