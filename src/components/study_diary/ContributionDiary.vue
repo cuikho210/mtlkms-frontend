@@ -126,7 +126,9 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import api from '@/store/api'
+
 import { marked } from 'marked'
+marked.setOptions({sanitize: true})
 
 export default {
     name: 'ContributionDiary',
