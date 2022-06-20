@@ -531,6 +531,11 @@ textarea {
   margin-right: auto;
 }
 
+.mx-3 {
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
 .mr-1 {
   margin-right: .25rem;
 }

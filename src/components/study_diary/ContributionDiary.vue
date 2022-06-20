@@ -18,7 +18,15 @@
             Chưa có dữ liệu thống kê cho tháng này
         </p>
 
-        <input type="month" v-model="date">
+        <input type="month" v-model="date" class="mb-4" />
+            
+        <div class="color-help">
+            <span
+            v-for="(color, index) in dayColors"
+            :key="index"
+            :style="{ backgroundColor: color }"
+            ></span>
+        </div>
     </div>
 
     <div style="max-width: 100%; overflow-x: scroll">
@@ -51,7 +59,8 @@
                     :style="{
                         backgroundColor: dayBackground(col.diary.length),
                         outline: col.isActive ? '1px solid #000' : 'none',
-                        boxShadow: col.isToday ? '3px 3px 1px #ff907f' : 'none'
+                        boxShadow: col.isToday ? '3px 3px 1px #ff907f' : 'none',
+                        color: col.diary.length > 9 ? '#fff' : '#000'
                     }">
                         {{ col.day }}
                     </p>
@@ -156,7 +165,23 @@ export default {
             month: this.$route.query.month || new Date().getMonth() + 1,
             year: this.$route.query.year || new Date().getFullYear(),
             date: '',
-            timeMonth: 0
+            timeMonth: 0,
+
+            dayColors: [
+                '#ffffff',
+                '#aaffd7',
+                '#56ffb0',
+                '#00ff87',
+                '#29e96c',
+                '#06cd4b',
+                '#00b23e',
+                '#009935',
+                '#007f2c',
+                '#00661b',
+                '#004c14',
+                '#00330d',
+                '#002601'
+            ]
         }
     },
 
@@ -348,21 +373,13 @@ export default {
         },
 
         dayBackground (length) {
-            switch (length) {
-                case 0: return '#ffffff'
-                case 1: return '#aaffd7'
-                case 2: return '#56ffb0'
-                case 3: return '#00ff87'
-                case 4: return '#29e96c'
-                case 5: return '#06cd4b'
-                case 6: return '#00b23e'
-                case 7: return '#009935'
-                case 8: return '#007f2c'
-                case 9: return '#00661b'
-                case 10: return '#004c14'
-                case 11: return '#00330d'
-                default: return '#002601'
+            let result = this.dayColors[length]
+            
+            if (result) {
+                return result
             }
+
+            return this.dayColors[this.dayColors.length - 1]
         }
     },
 
@@ -427,6 +444,19 @@ input[type="month"] {
 
 input[type="month"]:focus {
     outline: 2px solid #ff907f;
+}
+
+.color-help {
+    text-align: right;
+    margin-right: 1rem;
+}
+
+.color-help span {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin: 0 1px;
+    border-radius: 50%;
 }
 
 </style>
