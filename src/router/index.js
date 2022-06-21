@@ -14,6 +14,8 @@ import EditProfileView from '../views/accounts/EditProfileView.vue'
 import SDListView from '../views/study_diary/SDListView.vue'
 import SDTagView from '../views/study_diary/SDTagView.vue'
 
+import UserListView from '../views/users/UserListView.vue'
+
 const routes = [
   {
     path: '/',
@@ -94,6 +96,15 @@ const routes = [
     component: SDTagView,
     meta: {
       title: 'Nhật Ký Thời Gian Học - MTLKMS'
+    }
+  },
+
+  {
+    path: '/users',
+    name: 'users',
+    component: UserListView,
+    meta: {
+      title: 'Danh Sách Các Vịt - MTLKMS'
     }
   }
 ]

@@ -29,5 +29,9 @@ export default {
 
     setRedirect (state, redirect) {
         state.redirect = redirect
+    },
+
+    setUsers (state, users) {
+        state.users = users
     }
 }

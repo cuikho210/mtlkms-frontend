@@ -14,5 +14,9 @@ export default {
         avatarURL: ''
     },
 
-    learningDiary: false
+    learningDiary: false,
+
+    users: {
+        // username: { data }
+    }
 }

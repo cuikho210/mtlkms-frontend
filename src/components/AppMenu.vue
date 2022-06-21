@@ -67,6 +67,12 @@ export default {
                     auth: true
                 },
                 {
+                    name: 'Các Vịt Khác',
+                    path: '/users',
+                    icon: 'people',
+                    auth: true
+                },
+                {
                     name: 'Đăng Nhập',
                     path: '/login',
                     icon: 'login',

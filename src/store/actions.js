@@ -141,5 +141,32 @@ export default {
             commit('setIsLoading', false)
             throw err
         }
+    },
+
+    async fetchUsers ({ commit, state }) {
+        if (Object.keys(state.users).length > 0) {
+            return true
+        }
+
+        commit('setIsLoading', true)
+
+        try {
+            let result = await api.get('/user')
+            let data = await result.json()
+
+            commit('setIsLoading', false)
+
+            if (result.status == 200) {
+                commit('setUsers', data.data)
+                return true
+            }
+            else {
+                throw new Error(data.error)
+            }
+        }
+        catch (err) {
+            commit('setIsLoading', false)
+            throw err
+        }
     }
 }
