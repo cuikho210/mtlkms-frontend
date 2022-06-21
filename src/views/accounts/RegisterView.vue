@@ -107,7 +107,8 @@ export default {
             }
 
             try {
-                await this.register(this.form)
+                let result = await this.register(this.form)
+                if (!result) return
 
                 this.isSuccess = true
                 this.apiLog = ''

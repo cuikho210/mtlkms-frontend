@@ -88,18 +88,19 @@ export default {
 
         async submitForm() {
             try {
-                await this.login(this.form)
+                let result = await this.login(this.form)
+                if (!result) return
+
+                this.isSuccess = true
+                this.apiLog = ''
+                this.log = 'Đăng nhập thành công'
+                this.$router.push('/')
             }
             catch (err) {
                 this.isSuccess = false
                 this.apiLog = err.message
                 this.showLog()
             }
-
-            this.isSuccess = true
-            this.apiLog = ''
-            this.log = 'Đăng nhập thành công'
-            this.$router.push('/')
         },
 
         showLog () {
