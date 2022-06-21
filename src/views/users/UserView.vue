@@ -6,6 +6,9 @@ v-if="isUserLoaded()">
     :user-data="user" />
     <hr>
 
+    <SDTagList :userID="user.id" />
+    <br />
+
     <h3 class="mb-4">Nhật ký thời gian học</h3>
     <ContributionDiary
     :userID="user.id" />
@@ -16,13 +19,15 @@ v-if="isUserLoaded()">
 import { mapState, mapActions, mapMutations } from 'vuex'
 import ProfileComponent from '@/components/user/ProfileComponent.vue'
 import ContributionDiary from '@/components/study_diary/ContributionDiary.vue'
+import SDTagList from '@/components/study_diary/SDTagList.vue'
 
 export default {
     name: 'UserView',
 
     components: {
         ProfileComponent,
-        ContributionDiary
+        ContributionDiary,
+        SDTagList
     },
 
     data () {

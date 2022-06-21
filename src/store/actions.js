@@ -51,21 +51,27 @@ export default {
         }
     },
 
-    async getLearningDiary ({ commit, state }) {
+    async getLearningDiary ({ commit, state }, userID) {
         commit('setIsLoading', true)
 
         try {
-            let result = await api.get('/study-diary/diary/' + state.user.id)
+            let id = userID || state.user.id
+
+            let result = await api.get('/study-diary/diary/' + id)
             let data = await result.json()
 
             commit('setIsLoading', false)
 
-            if (result.status == 200) {
-                commit('setLearningDiary', data.data)
-                return true
+            if (result.status != 200) {
+                throw new Error(data.error)
+            }
+            
+            if (userID) {
+                return data.data
             }
             else {
-                throw new Error(data.error)
+                commit('setLearningDiary', data.data)
+                return true
             }
         }
         catch (err) {

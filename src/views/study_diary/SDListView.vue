@@ -292,6 +292,7 @@ export default {
 
     methods: {
         ...mapMutations(['setIsLoading']),
+
         getTags () {
             this.setIsLoading(true)
 
@@ -408,6 +409,7 @@ export default {
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.tags.push(data.result)
+                        sessionStorage.clear()
                         this.saveSessionData()
 
                         this.showMessage(
@@ -460,6 +462,7 @@ export default {
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.tags[this.editTagData.index] = data.result
+                        sessionStorage.clear()
                         this.saveSessionData()
 
                         this.showMessage(
@@ -508,6 +511,7 @@ export default {
                 if (res.status == 200) {
                     res.json().then(() => {
                         this.tags.splice(this.deleteTagData.index, 1)
+                        sessionStorage.clear()
                         this.saveSessionData()
 
                         this.showMessage(

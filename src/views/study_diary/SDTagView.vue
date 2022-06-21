@@ -15,7 +15,7 @@
         <div>
             <div
             v-if="learningDiaryData.is_learning == 1">
-                <div class="icon" @click="stopLearnPopup.isDisplay = true">
+                <div class="icon" @click="showStopLearnPopup()">
                     <span class="material-icons">stop</span>
                 </div>
 
@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex' 
+import { mapState, mapMutations, mapActions } from 'vuex' 
 import { marked } from 'marked'
 import api from '@/store/api'
 import MessagePopup from '@/components/MessagePopup.vue'
@@ -174,6 +174,8 @@ export default {
 
     methods: {
         ...mapMutations(['setTitle', 'setIsLoading', 'setLearningDiary']),
+        ...mapActions(['getLearningDiary']),
+
         async getTagData () {
             this.setIsLoading(true)
 
@@ -197,16 +199,39 @@ export default {
 
             // Change title
             this.setTitle(this.tagData.name + ' - Study Diary - MTLKMS')
-
-            if (this.learningDiary.sdtag == this.tagData.id) {
-                this.learningDiaryData = this.learningDiary
-                this.startStopwatch()
+   
+            if (this.isAuth) {
+                if (this.learningDiary.sdtag == this.tagData.id) {
+                    this.learningDiaryData = this.learningDiary
+                    this.startStopwatch()
+                }
+            }
+            else {
+                await this.getLearningDiaryData()
             }
 
             this.setIsLoading(false)
         },
 
+        async getLearningDiaryData () {
+            try {
+                let data = await this.getLearningDiary(this.tagData.user)
+
+                if (!data) return
+                
+                if (this.tagData.id == data.sdtag) {
+                    this.learningDiaryData = data
+                    this.startStopwatch()
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        },
+
         startLearn () {
+            if (!this.isAuth) return
+
             if (this.learningDiary) {
                 this.showMessage(
                     'Lỗi',
@@ -276,6 +301,8 @@ export default {
             let data = await result.json()
 
             if (result.status !== 200) {
+                this.setIsLoading(false)
+
                 this.showMessage(
                     'Lỗi',
                     'Đã có lỗi xảy ra, vui lòng thử lại sau',
@@ -302,6 +329,10 @@ export default {
             )
 
             this.setIsLoading(false)
+        },
+
+        showStopLearnPopup () {
+            if (this.isAuth) this.stopLearnPopup.isDisplay = true
         },
 
         minutesToStr (minutes) {
@@ -352,7 +383,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['learningDiary']),
+        ...mapState(['learningDiary', 'user']),
 
         showStopwatchTime () {
             let minutes = Math.floor(this.stopwatch / 60)
@@ -360,6 +391,10 @@ export default {
             let hours = (minutes / 60).toFixed(2)
 
             return `${minutes} phút ${seconds} giây (${hours} giờ)`
+        },
+
+        isAuth () {
+            return this.tagData.user == this.user.id
         }
     }
 }

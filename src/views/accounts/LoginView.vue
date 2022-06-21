@@ -94,6 +94,14 @@ export default {
                 this.isSuccess = true
                 this.apiLog = ''
                 this.log = 'Đăng nhập thành công'
+
+                try {
+                    await this.getLearningDiary()
+                }
+                catch (err) {
+                    console.log('Bạn không đang học môn nào - ', err.message)
+                }
+
                 this.$router.push('/')
             }
             catch (err) {
