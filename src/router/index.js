@@ -15,6 +15,7 @@ import SDListView from '../views/study_diary/SDListView.vue'
 import SDTagView from '../views/study_diary/SDTagView.vue'
 
 import UserListView from '../views/users/UserListView.vue'
+import UserView from '../views/users/UserView.vue'
 
 const routes = [
   {
@@ -106,6 +107,15 @@ const routes = [
     meta: {
       title: 'Danh Sách Các Vịt - MTLKMS'
     }
+  },
+
+  {
+    path: '/users/:username',
+    name: 'user',
+    component: UserView,
+    meta: {
+      title: 'Thông Tin Cá Nhân - MTLKMS'
+    }
   }
 ]
 
@@ -141,12 +151,10 @@ router.beforeEach((to, from, next) => {
 
   // If a route with a title was found, set the document (page) title to that value.
   if(nearestWithTitle) {
-    document.title = nearestWithTitle.meta.title
+    store.commit('setTitle', nearestWithTitle.meta.title)
   } else if(previousNearestWithMeta) {
-    document.title = previousNearestWithMeta.meta.title
+    store.commit('setTitle', previousNearestWithMeta.meta.title)
   }
-
-  changeNavbarTitle()
 
   // Remove any stale meta tags from the document using the key attribute we set below.
   Array.from(document.querySelectorAll('[data-vue-router-controlled]')).map(el => el.parentNode.removeChild(el))
@@ -172,9 +180,5 @@ router.beforeEach((to, from, next) => {
 
   next()
 })
-
-function changeNavbarTitle () {
-  store.commit('setTitle', document.title)
-}
 
 export default router

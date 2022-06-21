@@ -2,6 +2,7 @@ import api from "./api"
 
 export default {
     setTitle (state, title) {
+        document.title = title
         state.title = title
     },
 
@@ -32,6 +33,8 @@ export default {
     },
 
     setUsers (state, users) {
-        state.users = users
+        users.forEach(user => {
+            state.users[user.username] = user
+        })
     }
 }

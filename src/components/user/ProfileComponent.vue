@@ -1,30 +1,49 @@
 <template>
 <div class="main">
-    <img :src="user.avatarURL" :alt="user.username" class="avatar-xl">
+    <img :src="getAvatarURL()" :alt="user.username" class="avatar-xl">
 
     <div>
         <h3>{{ user.name }}</h3>
         <p class="text-secondary">{{ user.username }} - Tham gia lúc {{ convertTimestampToLocalDate(user.created_at) }}</p>
         <p>{{ user.slogan }}</p>
-        <p><router-link to="/profile/edit">[Edit Profile]</router-link></p>
+
+        <p v-if="auth">
+            <router-link to="/profile/edit">[Edit Profile]</router-link>
+        </p>
+        <p v-else>
+            <br>
+        </p>
     </div>
 </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import api from '@/store/api'
 
 export default {
     name: 'UserProfile',
 
-    data () {
-        return {
-
+    props: {
+        userData: {
+            type: Object
         }
     },
 
-    computed: {
-        ...mapState(['user']),
+    created () {
+        if (this.userData) {
+            this.user = this.userData
+        }
+        else {
+            this.user = this.$store.state.user
+            this.auth = true
+        }
+    },
+
+    data () {
+        return {
+            user: {},
+            auth: false
+        }
     },
 
     methods: {
@@ -32,6 +51,10 @@ export default {
             return new Date(timestamp).toLocaleString('vi-VN', {
                 timeZone: 'Asia/Ho_Chi_Minh'
             })
+        },
+
+        getAvatarURL () {
+            return api.getAvatarURL(this.user.username)
         }
     }
 }

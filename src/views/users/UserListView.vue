@@ -4,7 +4,7 @@
     v-for="(user, index) of users"
     :key="index"
     class="user"
-    :to="'/user/' + user.username"
+    :to="'/users/' + user.username"
     >
         <img
         :src="getAvatarURL(user.username)"

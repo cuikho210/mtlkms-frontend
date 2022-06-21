@@ -217,19 +217,26 @@ export default {
                 url += `${userID}/${this.year}/${this.month}`
             }
 
-            this.setIsLoading(true)
-
-            let result = await api.get(url)
-            let data = await result.json()
-
-            this.setIsLoading(false)
-
-            if (result.status != 200) {
-                throw new Error(data.error)
+            if (this.loadSessionData(url)) {
+                return
             }
+            else {
+                this.setIsLoading(true)
 
-            this.showDay.diary = []
-            this.putDiary(data.data.diaries, data.data.times)
+                let result = await api.get(url)
+                let data = await result.json()
+
+                this.setIsLoading(false)
+
+                if (result.status != 200) {
+                    throw new Error(data.error)
+                }
+
+                this.showDay.diary = []
+                this.putDiary(data.data.diaries, data.data.times)
+
+                this.saveSessionData(url, data.data)
+            }
         },
 
         putDiary (diaries, times) {
@@ -396,6 +403,22 @@ export default {
             }
 
             return this.dayColors[this.dayColors.length - 1]
+        },
+
+        saveSessionData (url, data) {
+            sessionStorage.setItem(url, JSON.stringify(data))
+        },
+
+        loadSessionData (url) {
+            let sessionData = sessionStorage.getItem(url)
+            if (!sessionData) return false
+
+            let data = JSON.parse(sessionData)
+
+            this.showDay.diary = []
+            this.putDiary(data.diaries, data.times)
+
+            return true
         }
     },
 

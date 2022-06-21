@@ -196,8 +196,7 @@ export default {
             this.tagData = data.data
 
             // Change title
-            document.title = this.tagData.name + ' - Study Diary - MTLKMS'
-            this.setTitle(document.title)
+            this.setTitle(this.tagData.name + ' - Study Diary - MTLKMS')
 
             if (this.learningDiary.sdtag == this.tagData.id) {
                 this.learningDiaryData = this.learningDiary
@@ -232,7 +231,7 @@ export default {
                         this.learningDiaryData = learningDiary
                         this.setLearningDiary(learningDiary)
 
-                        sessionStorage.removeItem('tags')
+                        sessionStorage.clear()
 
                         this.startStopwatch()
                     }
@@ -293,7 +292,7 @@ export default {
             this.stopLearnPopup.log = ''
 
             this.tagData = data.data
-            sessionStorage.removeItem('tags')
+            sessionStorage.clear()
             this.refeshToggle = !this.refeshToggle
 
             this.showMessage(
