@@ -43,12 +43,18 @@
             </tr>
             <tr v-for="(row, i) in diaries.data" :key="i">
                 <td>
-                    <p v-if="diaries.timeWeek[i] != ''">
-                        {{ diaries.timeWeek[i] }}'
-                        <br>
-                        ({{ (diaries.timeWeek[i] / 60).toFixed(1) }}h)
-                        <br><br><br>
-                    </p>
+                    <div
+                    v-if="diaries.timeWeek[i] != ''">
+                        <p :style="weekStyle(diaries.timeWeek[i])">
+                            Tuần {{ i + 1 }}
+                        </p>
+                        <span class="text-secondary">
+                            {{ diaries.timeWeek[i] }}'
+                            <br>
+                            ({{ (diaries.timeWeek[i] / 60).toFixed(1) }}h)
+                        </span>
+                        <br /><br />
+                    </div>
                 </td>
 
                 <td v-for="(col, j) in row" :key="j">
@@ -82,7 +88,7 @@
     </div>
 
     <div style="margin-bottom: 7rem">
-        <h2 class="mb-4">{{ showDay.title }}</h2>
+        <h2 class="mb-4">{{ showDay.title }} - {{ showDay.diary.length }} diary</h2>
         <hr>
 
         <div
@@ -194,7 +200,7 @@ export default {
                 '#004c2c',
                 '#00331d',
                 '#00190e',
-                '#000000',
+                '#000000'
             ]
         }
     },
@@ -356,7 +362,7 @@ export default {
                         rows.data[row][weekday].time = time.time
                     }
                     else if (time.type == 1) {
-                        rows.timeWeek[row - 1] = time.time
+                        rows.timeWeek[row] = time.time
                     }
                     else if (time.type == 2) {
                         this.timeMonth = time.time
@@ -403,6 +409,24 @@ export default {
             }
 
             return this.dayColors[this.dayColors.length - 1]
+        },
+
+        weekStyle (time) {
+            let style = {
+                backgroundColor: '#fff',
+                color: '#000',
+                cursor: 'default',
+                padding: '.5rem .25rem'
+            }
+
+            let index = Math.floor(time / 60 / 2)
+
+            if (this.dayColors[index]) style.backgroundColor = this.dayColors[index]
+            else style.backgroundColor = this.dayColors[this.dayColors.length]
+
+            if (index > 8) style.color = '#fff'
+
+            return style
         },
 
         saveSessionData (url, data) {
