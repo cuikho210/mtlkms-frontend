@@ -135,7 +135,7 @@ import api from '@/store/api'
 import hljs from 'highlight.js'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import 'highlight.js/styles/github.css';
+import 'highlight.js/styles/github.css'
 
 marked.setOptions({
     highlight: function(code, lang) {

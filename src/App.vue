@@ -461,6 +461,28 @@ blockquote {
 }
 
 /* --------------------------------------------------- */
+/* Notification                                        */
+/* --------------------------------------------------- */
+
+.notifi {
+  display: block;
+  padding: 1rem;
+  margin: .25rem auto;
+  border-radius: .5rem;
+  box-sizing: border-box;
+}
+
+.notifi-success {
+  background-color: #4caf5010;
+  color: #4caf50;
+}
+
+.notifi-danger {
+  background-color: #f4433610;
+  color: #f44336;
+}
+
+/* --------------------------------------------------- */
 /* Custom class                                        */
 /* --------------------------------------------------- */
 
@@ -496,12 +518,6 @@ blockquote {
 .avatar-xl {
   width: 250px;
   height: 250px;
-  border-radius: 50%;
-}
-
-.avatar-sm {
-  width: 30px;
-  height: 30px;
   border-radius: 50%;
 }
 
