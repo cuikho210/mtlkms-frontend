@@ -8,8 +8,14 @@
         :to="`/study-diary/${tag.id}`"
         :style="{backgroundColor: tag.bg_color, color: tag.text_color}">
 
-            <span class="material-icons mr-2">{{ tag.icon }}</span>
-            <b>{{ tag.name }}</b>
+            <div>
+                <span class="material-icons mr-2">{{ tag.icon }}</span>
+                <b>{{ tag.name }}</b>
+            </div>
+
+            <div>
+                {{ (tag.time_total / 60).toFixed(2) }} giờ
+            </div>
 
         </router-link>
     </div>
@@ -89,7 +95,7 @@ export default {
 <style scoped>
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: .5rem;
     margin-top: 20px;
 }
@@ -100,6 +106,12 @@ export default {
     padding: 1.25rem;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tag > div:nth-child(1) {
     display: flex;
     align-items: center;
 }

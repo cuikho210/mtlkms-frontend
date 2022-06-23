@@ -95,6 +95,7 @@
 
         <ContributionDiary
         :tag="tagData.id"
+        :userID="tagData.user"
         v-if="tagData.id != 0"
         :refesh-toogle="refeshToggle" />
     </div>
