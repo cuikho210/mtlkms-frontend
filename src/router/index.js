@@ -17,6 +17,9 @@ import SDTagView from '../views/study_diary/SDTagView.vue'
 import UserListView from '../views/users/UserListView.vue'
 import UserView from '../views/users/UserView.vue'
 
+import guideView from '../views/guide/guideView'
+import markdownGuideView from '../views/guide/markdownGuideView'
+
 const routes = [
   {
     path: '/',
@@ -115,6 +118,24 @@ const routes = [
     component: UserView,
     meta: {
       title: 'Thông Tin Cá Nhân - MTLKMS'
+    }
+  },
+
+  {
+    path: '/guide',
+    name: 'guide',
+    component: guideView,
+    meta: {
+      title: 'Hướng Dẫn - MTLKMS'
+    }
+  },
+
+  {
+    path: '/guide/markdown',
+    name: 'guide-markdown',
+    component: markdownGuideView,
+    meta: {
+      title: 'Cú Pháp Markdown (MD) - MTLKMS'
     }
   }
 ]

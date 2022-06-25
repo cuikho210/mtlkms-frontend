@@ -73,6 +73,12 @@ export default {
                     auth: true
                 },
                 {
+                    name: 'Hướng Dẫn',
+                    path: '/guide',
+                    icon: 'library_books',
+                    auth: true
+                },
+                {
                     name: 'Đăng Nhập',
                     path: '/login',
                     icon: 'login',
