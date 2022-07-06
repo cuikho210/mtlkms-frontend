@@ -1,24 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 
+import accountRoutes from './accountRoutes'
+import profileRoutes from './profileRoutes'
+import studyDiaryRoutes from './studyDiaryRoutes'
+import userRoutes from './userRoutes'
+import guideRoutes from './guideRoutes'
+
 import HomeView from '../views/HomeView.vue'
-
-// Account View
-import LoginView from '../views/accounts/LoginView.vue'
-import RegisterView from '../views/accounts/RegisterView.vue'
-import LogoutView from '../views/accounts/LogoutView.vue'
-
-import ProfileView from '../views/accounts/ProfileView.vue'
-import EditProfileView from '../views/accounts/EditProfileView.vue'
-
-import SDListView from '../views/study_diary/SDListView.vue'
-import SDTagView from '../views/study_diary/SDTagView.vue'
-
-import UserListView from '../views/users/UserListView.vue'
-import UserView from '../views/users/UserView.vue'
-
-import guideView from '../views/guide/guideView'
-import markdownGuideView from '../views/guide/markdownGuideView'
 
 const routes = [
   {
@@ -40,104 +29,11 @@ const routes = [
     }
   },
 
-  {
-    path: '/login',
-    name: 'login',
-    component: LoginView,
-    meta: {
-      title: 'Đăng Nhập - MTLKMS'
-    }
-  },
-
-  {
-    path: '/register',
-    name: 'register',
-    component: RegisterView,
-    meta: {
-      title: 'Đăng Ký - MTLKMS'
-    }
-  },
-
-  {
-    path: '/logout',
-    name: 'logout',
-    component: LogoutView,
-    meta: {
-      title: 'Đăng Xuất - MTLKMS'
-    }
-  },
-
-  {
-    path: '/profile',
-    name: 'profile',
-    component: ProfileView,
-    meta: {
-      title: 'Thông Tin Cá Nhân - MTLKMS'
-    }
-  },
-
-  {
-    path: '/profile/edit',
-    name: 'edit-profile',
-    component: EditProfileView,
-    meta: {
-      title: 'Chỉnh Sửa Thông Tin Cá Nhân - MTLKMS'
-    }
-  },
-
-  {
-    path: '/study-diary',
-    name: 'study-diary',
-    component: SDListView,
-    meta: {
-      title: 'Nhật Ký Thời Gian Học - MTLKMS'
-    }
-  },
-
-  {
-    path: '/study-diary/:id',
-    name: 'study-diary-tag',
-    component: SDTagView,
-    meta: {
-      title: 'Nhật Ký Thời Gian Học - MTLKMS'
-    }
-  },
-
-  {
-    path: '/users',
-    name: 'users',
-    component: UserListView,
-    meta: {
-      title: 'Danh Sách Các Vịt - MTLKMS'
-    }
-  },
-
-  {
-    path: '/users/:username',
-    name: 'user',
-    component: UserView,
-    meta: {
-      title: 'Thông Tin Cá Nhân - MTLKMS'
-    }
-  },
-
-  {
-    path: '/guide',
-    name: 'guide',
-    component: guideView,
-    meta: {
-      title: 'Hướng Dẫn - MTLKMS'
-    }
-  },
-
-  {
-    path: '/guide/markdown',
-    name: 'guide-markdown',
-    component: markdownGuideView,
-    meta: {
-      title: 'Cú Pháp Markdown (MD) - MTLKMS'
-    }
-  }
+  ...accountRoutes,
+  ...profileRoutes,
+  ...studyDiaryRoutes,
+  ...userRoutes,
+  ...guideRoutes
 ]
 
 const router = createRouter({
