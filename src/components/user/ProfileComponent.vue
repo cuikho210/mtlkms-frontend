@@ -14,6 +14,29 @@
             <br>
         </p>
     </div>
+
+    <table>
+        <tr>
+            <th>Hôm nay:</th>
+            <td>{{ caculateTime(user.time_today) }}</td>
+        </tr>
+        <tr>
+            <th>Tuần:</th>
+            <td>{{ caculateTime(user.time_week) }}</td>
+        </tr>
+        <tr>
+            <th>Tháng:</th>
+            <td>{{ caculateTime(user.time_month) }}</td>
+        </tr>
+        <tr>
+            <th>Năm:</th>
+            <td>{{ caculateTime(user.time_year) }}</td>
+        </tr>
+        <tr>
+            <th>Tổng:</th>
+            <td>{{ caculateTime(user.time_total) }}</td>
+        </tr>
+    </table>
 </div>
 </template>
 
@@ -55,6 +78,14 @@ export default {
 
         getAvatarURL () {
             return api.getAvatarURL(this.user.username)
+        },
+
+        caculateTime (minutes) {
+            if (minutes == null) return '0 giờ (0 phút)'
+
+            let hours = (minutes / 60).toFixed(2)
+
+            return `${hours} giờ (${minutes} phút)`
         }
     }
 }
@@ -77,7 +108,17 @@ export default {
     transition: margin-left .5s;
 }
 
-@media (min-width: 540px) {
+table {
+    width: 100%
+}
+
+table th {
+    text-align: right;
+    padding: .5rem;
+    width: 45%;
+}
+
+@media (min-width: 1024px) {
     .main {
         flex-direction: row;
         justify-content: space-evenly;
