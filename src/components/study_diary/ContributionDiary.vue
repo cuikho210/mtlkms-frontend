@@ -18,7 +18,13 @@
             Chưa có dữ liệu thống kê cho tháng này
         </p>
 
-        <input type="month" v-model="date" class="mb-4" />
+        <div>
+            <span @click="toBeforeMonth()" class="material-icons btn-icon mr-2">navigate_before</span>
+
+            <input type="month" v-model="date" class="mb-4" style="display: inline-block; position: relative; top: -5px" />
+
+            <span @click="toNextMonth()" class="material-icons btn-icon ml-2">navigate_next</span>
+        </div>
             
         <div class="color-help">
             <span
@@ -168,7 +174,7 @@ export default {
     },
 
     created () {
-        this.getDiaries()
+        this.adjustDate()
     },
 
     data () {
@@ -443,6 +449,43 @@ export default {
             this.putDiary(data.diaries, data.times)
 
             return true
+        },
+
+        toNextMonth () {
+            this.month++
+
+            if (this.month > 12) {
+                this.month = 1
+                this.year++
+            }
+
+            this.adjustDate()
+        },
+
+        toBeforeMonth () {
+            this.month--
+
+            if (this.month < 1) {
+                this.month = 12
+                this.year--
+            }
+
+            this.adjustDate()
+        },
+
+        formatMonth (month) {
+            month = String(month)
+
+            if (month.length > 1) return month
+            return '0' + month
+        },
+
+        adjustDate (month, year) {
+            month = month || this.month
+            year = year || this.year
+
+            let date = year + '-' + this.formatMonth(month)
+            this.date = date
         }
     },
 
@@ -520,6 +563,17 @@ input[type="month"]:focus {
     height: 1rem;
     margin: 0 1px;
     border-radius: 50%;
+}
+
+.btn-icon {
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 50%;
+    transition: background-color .5s;
+}
+
+.btn-icon:hover {
+    background-color: #ff907f30;
 }
 
 </style>
