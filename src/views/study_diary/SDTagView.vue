@@ -36,11 +36,28 @@
                 <h3>{{ tagData.name }}</h3>
             </div>
 
-            <p>Hôm nay: <b>{{ minutesToStr(tagData.time_today) }}</b></p>
-            <p>Tuần này: <b>{{ minutesToStr(tagData.time_week) }}</b></p>
-            <p>Tháng này: <b>{{ minutesToStr(tagData.time_month) }}</b></p>
-            <p>Năm nay: <b>{{ minutesToStr(tagData.time_year) }}</b></p>
-            <p>Tổng thời gian học: <b>{{ minutesToStr(tagData.time_total) }}</b></p>
+            <table>
+                <tr>
+                    <td>Hôm nay:</td>
+                    <th>{{ minutesToStr(tagData.time_today) }}</th>
+                </tr>
+                <tr>
+                    <td>Tuần:</td>
+                    <th>{{ minutesToStr(tagData.time_week) }}</th>
+                </tr>
+                <tr>
+                    <td>Tháng:</td>
+                    <th>{{ minutesToStr(tagData.time_month) }}</th>
+                </tr>
+                <tr>
+                    <td>Năm:</td>
+                    <th>{{ minutesToStr(tagData.time_year) }}</th>
+                </tr>
+                <tr>
+                    <td>Tổng:</td>
+                    <th>{{ minutesToStr(tagData.time_total) }}</th>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -423,6 +440,7 @@ export default {
     cursor: pointer;
     transition: background-color .5s;
     box-sizing: border-box;
+    margin: auto 2rem;
 }
 
 .header .icon:hover {
@@ -430,6 +448,15 @@ export default {
 }
 
 .header .icon .material-icons {
-    font-size: 7rem;
+    font-size: 10rem;
+}
+
+table {
+    width: 100%;
+}
+
+table td {
+    text-align: right;
+    padding: .5rem;
 }
 </style>
