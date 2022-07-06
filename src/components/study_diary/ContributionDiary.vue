@@ -345,6 +345,8 @@ export default {
                 })
             }
 
+            this.timeMonth = 0
+            
             if (times) {
                 this.putTimes(rows, times)
             }
