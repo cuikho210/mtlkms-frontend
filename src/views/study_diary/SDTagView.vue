@@ -192,7 +192,7 @@ export default {
 
     methods: {
         ...mapMutations(['setTitle', 'setIsLoading', 'setLearningDiary']),
-        ...mapActions(['getLearningDiary']),
+        ...mapActions(['getLearningDiary', 'checkLogin']),
 
         async getTagData () {
             this.setIsLoading(true)
@@ -346,7 +346,7 @@ export default {
                 'success'
             )
 
-            this.setIsLoading(false)
+            this.checkLogin()
         },
 
         showStopLearnPopup () {
