@@ -11,8 +11,9 @@ Build: https://github.com/mtlkms/mtlkms.github.io
 ```bash
 git clone https://github.com/cuikho210/mtlkms-frontend
 cd mtlkms-frontend
-npm install
-npm run serve
+docker build -t mtlkms .
+docker-compose run --rm app npm install
+docker-compose up
 ```
 
 Tại `/src/store/api.js`, sửa `API.host` cho khớp với máy chủ backend tại local của bạn. Yêu cầu HTTPS ở phía server.
@@ -22,7 +23,7 @@ Tại `/src/store/api.js`, sửa `API.host` cho khớp với máy chủ triển 
 Sau đó chạy:
 
 ```bash
-npm run build
+docker-compose run --rm app npm run build
 ```
 
 Dữ liệu đã build sẽ được lưu tại `/dist`
