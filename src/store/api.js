@@ -1,7 +1,7 @@
 class API {
     constructor () {
-        // this.host = 'https://server.test'
-        this.host = 'https://mtlkms.vitcon.cf'
+        this.host = 'https://server.test'
+        // this.host = 'https://mtlkms.vitcon.cf'
     }
 
     get (url) {
