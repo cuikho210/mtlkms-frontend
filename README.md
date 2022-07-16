@@ -7,6 +7,11 @@ Backend: https://github.com/cuikho210/mtlkms-backend
 Frontend: https://github.com/cuikho210/mtlkms-frontend  
 Build: https://github.com/mtlkms/mtlkms.github.io
 
+## Yêu Cầu
+- `docker`
+- `docker-compose`
+- `git`
+
 ## Dev
 ```bash
 git clone https://github.com/cuikho210/mtlkms-frontend
